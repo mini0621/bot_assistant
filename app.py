@@ -13,8 +13,8 @@ bot_name = "Curie"
 conversation_name =  f"conversations_{dt.datetime.now().strftime('%Y%m%d%H%M%S')}"
 
 #commands list
-log_activity = "/log"
-pomodoro = "/pomodoro"
+log_activity_command = "/log"
+pomodoro_command = "/pomodoro"
 
 
 @app.route("/", methods=("GET", "POST"))
@@ -22,7 +22,7 @@ def index():
     if request.method == "POST":
         user_name = request.form["user"]
         new_prompt = request.form["prompt"]
-        if new_prompt.startswith(log_activity):
+        if new_prompt.startswith(log_activity_command):
             answer = log_activity(new_prompt)
         else:
             answer = chat(conversation_name, user_name, new_prompt)
