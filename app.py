@@ -2,7 +2,7 @@ import os
 import datetime as dt
 
 import openai
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, send_file
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -15,7 +15,8 @@ conversation_name =  f"conversations_{dt.datetime.now().strftime('%Y%m%d%H%M%S')
 #commands list
 log_activity_command = "/log"
 pomodoro_command = "/pomodoro"
-
+fp=open(f"conversation.html", "w")
+fp.close()
 
 @app.route("/", methods=("GET", "POST"))
 def index():
@@ -67,6 +68,12 @@ def update_conversations(conversation_name, reply, user_name):
     with open(f"conversation_log/{conversation_name}.txt", "a") as fp:
         fp.write(f"{user_name}:{reply}\n")
         print("logging")
+    with open(f"conversation.html", "a") as fp:
+        fp.write(f"<p>{user_name}:{reply}\n<p>")
     conversations.append(f"{user_name}:{reply}")
     while len(conversations) > prompt_conversation_num:
         conversations.pop(0)
+
+@app.route('/conversation.html')
+def show_conversations():
+    return send_file('conversation.html')

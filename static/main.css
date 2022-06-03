@@ -25,9 +25,6 @@ body {
   align-items: center;
   padding-top: 60px;
 }
-.image {
-  width: 300px;
-}
 
 form {
   display: flex;
@@ -58,14 +55,22 @@ input[type="submit"] {
   margin-top: 40px;
 }
 .conversation {
-  display:inline-block;
-  width: 50%;
+  width: 30%;
+  margin-top: 0px;
 }
 .room-img {
   display:inline-block;
+  width: 70%;
+  align-items:center;
+}
+.room-img img{
   width: 50%;
-
+  margin-left: auto;
+  padding-left: 15%;
+  padding-right: 15%;
 }
 .room {
-  align-items: center;
+  display:flex;
+  align-items: flex-start;
+  justify-content: right;
  }

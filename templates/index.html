@@ -9,21 +9,29 @@
 </head>
 
 <body>
-  {% if answer %}
-  <div class="answer">{{ answer }}</div>
-  {% else %}
-  <div class="answer">Hello. How are you doing?</div>
-  {% endif %}
   <div class="room">
     <div class="room-img">
-      <img src="{{ url_for('static', filename='dummy.png') }}" class="image" />
+      <img src="{{ url_for('static', filename='room.png') }}" class="image" />
     </div>
     <div class="conversation">
       <form action="/" method="post">
-        <input type="text" name="user" placeholder="Misaki" value="Misaki" required /user_name>
+        <p>You are having a conversation as ... </p>
+        <input type="text" name="user" placeholder="Misaki" value="Misaki" required /user_name>  
+        <iframe src="{{ url_for('show_conversations') }}"></iframe>
+        {% if answer %}
+       <div class="answer">{{ answer }}</div>
+        {% else %}
+        <div class="answer">Hello. How are you doing?</div>
+        {% endif %}
         <input type="text" name="prompt" placeholder="ask something to me" required /user_name>
         <input type="submit" value="Ask" />
       </form>
+      <div>
+        <h4>commands list</h4>
+        <ul>
+          <li>/log {activity_name}</li>
+        </ul>
+      </div>
     </div>
   </div>
   <iframe class="yt_player" width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
