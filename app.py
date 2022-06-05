@@ -42,7 +42,7 @@ def log_activity(new_prompt):
     activity_name = new_prompt.split(" ")[1]
     log_time = dt.datetime.now()
     log_date = log_time.strftime('%Y-%m-%d')
-    with open(f"activity_log/{log_date}.txt", "a") as fp:
+    with open(f"log/activity_log/{log_date}.txt", "a") as fp:
         fp.write(f"{log_time}:{activity_name}\n")
     return f"I logged an activity.\n{log_time}:{activity_name}"
 
@@ -72,7 +72,7 @@ def generate_prompt():
     return prompt
 
 def update_conversations(conversation_name, reply, user_name):
-    with open(f"conversation_log/{conversation_name}.txt", "a") as fp:
+    with open(f"log/conversation_log/{conversation_name}.txt", "a") as fp:
         fp.write(f"{user_name}:{reply}\n")
         print("logging")
     with open(f"conversation.html", "a") as fp:
