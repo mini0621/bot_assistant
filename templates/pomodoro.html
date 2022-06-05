@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pomodoro.css') }}" />
+</head>
+<body>
+    <div>
+        <div>
+            <p>Pomodoro Count : <span id="pomodoro-count"></span></p>
+            <div class="control-button">
+                <a id="pomodoro-reset-button" href="#" onclick="resetPomodoroCount()">
+                  Reset count
+            </a> 
+        </div>
+    </div>
+    <div>
+        <form action="/pomodoro" method="post">
+            <input type="text" name="target" placeholder="{{ target }}">  
+            <input type="text" name="break_target" placeholder="{{ target_break }}">  
+            <input type="text" name="long_break" placeholder="{{ long_break }}">  
+            <input type="submit" value="Change setting" />
+        </form>
+    </div>
+    <div class="timer-control">
+        <div class="control-button">
+            <a id="button" href="#" onclick="changeStatus('pomodoro')">Pomodoro</a>
+            <a id="button" href="#" onclick="changeStatus('break')">Break</a>
+            <a id="button" href="#" onclick="changeStatus('long_break')">Long break</a>
+        </div>
+    </div>
+    <div id="timer">
+        <span id="timer-minutes"></span>
+        <span>:</span>    
+        <span id="timer-seconds">00</span>
+    </div>
+    <div class="control-button">
+      <a id="start-reset-button" href="#" onclick="is_timer_on == false? startTimer(): resetTimer();">
+        Start
+      </a>
+    </div>
+    <div class="control-button">
+      <a id="pause-button" href="#" onclick="is_paused == true?resumeTimer(): pauseTimer();">
+        Pause
+      </a>
+    </div>
+    <script>
+        var target = "{{ target }}";
+        var target_break = '{{ target_break }}';
+        var target_long_break = '{{ long_break }}';
+
+        target *= 60;
+        target_break *= 60;
+        target_long_break *= 60;
+        var status = "pomodoro";
+        var pomodoro_count = 0;
+        var time_left = target;
+        var is_timer_on = false;
+        var is_paused = false;
+        var interval;
+
+        document.getElementById("timer-minutes").innerHTML = time_left/60;
+        document.getElementById("pomodoro-count").innerHTML = pomodoro_count;
+         
+        function changeStatus(status_to_be) {
+            status = status_to_be;
+            resetTimer();
+        }
+
+        function resetPomodoroCount() {
+            pomodoro_count = 0;
+            status = "pomodoro";
+            resetTimer();
+        }
+
+        function countDown() {
+            interval = setInterval(function () {
+                updateTimer(time_left);
+                time_left--;
+                if (time_left == 0) {
+                    if (status == "pomodoro") {
+                        pomodoro_count++;
+                        status = "break";
+                    }else{
+                        status = "pomodoro";
+                    }
+                    if(status == "break" && pomodoro_count == 4) {
+                        pomodoro_count = 0;
+                        status = "long_break"
+                    }
+                    resetTimer()
+                }
+            }, 1000);
+        }
+
+        function updateTimer(time_left) {
+            document.getElementById("timer-minutes").innerHTML = Math.floor(time_left/60);
+            if (time_left%60 < 10) {
+                document.getElementById("timer-seconds").innerHTML = 0 + String(time_left%60);
+            }else {
+                document.getElementById("timer-seconds").innerHTML = time_left%60;
+            }
+        }
+        
+        function startTimer() {
+            is_timer_on = true;
+            document.getElementById("start-reset-button").innerHTML = "Reset";
+            document.getElementById("pause-button").innerHTML = "Pause";
+            countDown();
+        }
+        
+        function resetTimer() {
+            is_timer_on = false;
+            clearInterval(interval);
+            if (status == "pomodoro") {
+                time_left = target;
+            }else if (status == "break") {
+                time_left = target_break;
+            }else {
+                time_left = target_long_break;
+            }
+            updateTimer(time_left);
+            document.getElementById("start-reset-button").innerHTML = "Start";
+            document.getElementById("pause-button").innerHTML = "Pause";
+        }
+
+        function pauseTimer() {
+            is_paused = true;
+            clearInterval(interval);
+            document.getElementById("pause-button").innerHTML = "Resume";
+            document.getElementById("start-reset-button").innerHTML = "Reset";        
+        }
+
+        function resumeTimer() {
+            is_timer_on = false;
+            document.getElementById("pause-button").innerHTML = "Pause";
+            document.getElementById("start-reset-button").innerHTML = "Reset"; 
+            countDown(); 
+        }
+
+    </script>
+</body>

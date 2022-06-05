@@ -25,52 +25,28 @@ body {
   align-items: center;
   padding-top: 60px;
 }
-
-form {
-  display: flex;
-  flex-direction: column;
-  width: 320px;
-}
-input[type="text"] {
-  padding: 12px 16px;
-  border: 1px solid #10a37f;
-  border-radius: 4px;
-  margin-bottom: 24px;
-}
-::placeholder {
-  color: #8e8ea0;
-  opacity: 1;
-}
-input[type="submit"] {
-  padding: 12px 0;
-  color: #fff;
-  background-color: #10a37f;
-  border: none;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-}
-.answer {
-  font-weight: bold;
-  margin-top: 40px;
-}
 .conversation {
+  position: fixed;
   width: 30%;
+  top: 0px;
+  right: 0px;
   margin-top: 0px;
 }
 .room-img {
-  display:inline-block;
-  width: 70%;
+  position: fixed;
+  top: 50px;
+  right:35%;
+  width: 30%;
   align-items:center;
 }
 .room-img img{
-  width: 50%;
-  margin-left: auto;
-  padding-left: 15%;
-  padding-right: 15%;
+  width: 100%;
 }
 .room {
-  display:flex;
-  align-items: flex-start;
-  justify-content: right;
- }
+  width: 100%;
+}
+.tool {
+  width: 30%;
+  height: 800px;
+  background-color: gray;
+}

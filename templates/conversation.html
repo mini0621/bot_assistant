@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/conversation.css') }}" />
+</head>
+<form action="/conversation" method="post">
+    <p>You are having a conversation as ... </p>
+    <input type="text" name="user" placeholder="Misaki" value="Misaki" required /user_name>  
+    <iframe src="{{ url_for('show_conversations') }}"></iframe>
+    {% if answer %}
+   <div class="answer">{{ answer }}</div>
+    {% else %}
+    <div class="answer">Hello. How are you doing?</div>
+    {% endif %}
+    <input type="text" name="prompt" placeholder="ask something to me" required /user_name>
+    <input type="submit" value="Ask" />
+</form>
+<h4>commands list</h4>
+<div>
+  <ul>
+    <li>/log {activity_name}</li>
+  </ul>
+</div>

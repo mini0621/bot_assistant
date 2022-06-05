@@ -15,6 +15,13 @@ conversation_name =  f"conversations_{dt.datetime.now().strftime('%Y%m%d%H%M%S')
 #commands list
 log_activity_command = "/log"
 pomodoro_command = "/pomodoro"
+
+#pomodoro constants
+pomodoro_target = 25
+pomodoro_break = 5
+pomodoro_long_break = 15
+
+
 fp=open(f"conversation.html", "w")
 fp.close()
 
@@ -69,7 +76,7 @@ def update_conversations(conversation_name, reply, user_name):
         fp.write(f"{user_name}:{reply}\n")
         print("logging")
     with open(f"conversation.html", "a") as fp:
-        fp.write(f"<p>{user_name}:{reply}\n<p>")
+        fp.write(f"<p>{user_name}:{reply}\n</p>")
     conversations.append(f"{user_name}:{reply}")
     while len(conversations) > prompt_conversation_num:
         conversations.pop(0)
@@ -77,3 +84,34 @@ def update_conversations(conversation_name, reply, user_name):
 @app.route('/conversation.html')
 def show_conversations():
     return send_file('conversation.html')
+
+
+#test from here
+@app.route("/conversation", methods=("GET", "POST"))
+def conversation():
+    if request.method == "POST":
+        user_name = request.form["user"]
+        new_prompt = request.form["prompt"]
+        if new_prompt.startswith(log_activity_command):
+            answer = log_activity(new_prompt)
+        else:
+            answer = chat(conversation_name, user_name, new_prompt)
+        return redirect(url_for("conversation", answer=answer))
+    answer = request.args.get("answer")
+    return render_template("conversation.html", answer=answer)
+
+@app.route("/pomodoro", methods=("GET", "POST"))
+def pomodoro():
+    if request.method == "POST":
+        target = request.form["target"]
+        break_target = request.form["break_target"]
+        long_break = request.form["long_break"]
+        if target == "":
+            target = pomodoro_target
+        if break_target == "":
+            break_target = pomodoro_break
+        if long_break == "":
+            long_break = pomodoro_long_break
+        return render_template("pomodoro.html", target=target, target_break=break_target, long_break=long_break)    
+    return render_template("pomodoro.html", target=pomodoro_target, target_break=pomodoro_break, long_break=pomodoro_long_break)
+
