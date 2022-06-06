@@ -18,12 +18,9 @@ log_activity_command = "/log"
 pomodoro_command = "/pomodoro"
 
 #pomodoro constants
-pomodoro_target = 25
-pomodoro_break = 5
-pomodoro_long_break = 15
-
-fp=open(f"conversation.html", "w")
-fp.close()
+pomodoro_target = 1
+pomodoro_break = 1
+pomodoro_long_break = 1
 
 #db
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///store.db'
@@ -67,7 +64,7 @@ def chat(conversation_name, user_name, new_prompt):
 def generate_prompt():
     print("generating prompt")
     setting = f"The following is a conversation with an AI assistant, {bot_name}. The assistant is intelligent, logical, and helpful.\n\n"
-    prompt = setting + "\n".join(conversations) + f"\n{bot_name}:" 
+    prompt = setting + "\n".join(conversations[-4:]) + f"\n{bot_name}:" 
     print("----------------------")     
     print(prompt)     
     print("----------------------")     
@@ -77,16 +74,7 @@ def update_conversations(conversation_name, reply, user_name):
     with open(f"log/conversation_log/{conversation_name}.txt", "a") as fp:
         fp.write(f"{user_name}:{dt.datetime.now()}:{reply}\n")
         print("logging")
-    with open(f"conversation.html", "a") as fp:
-        fp.write(f"<p>{user_name}:{reply}\n</p>")
     conversations.append(f"{user_name}:{reply}")
-    while len(conversations) > prompt_conversation_num:
-        conversations.pop(0)
-
-@app.route('/conversation.html')
-def show_conversations():
-    return send_file('conversation.html')
-
 
 @app.route("/conversation", methods=("GET", "POST"))
 def conversation():
@@ -97,9 +85,9 @@ def conversation():
             answer = log_activity(new_prompt)
         else:
             answer = chat(conversation_name, user_name, new_prompt)
-        return redirect(url_for("conversation", answer=answer))
+        return redirect(url_for("conversation", answer=answer, conversations=conversations))
     answer = request.args.get("answer")
-    return render_template("conversation.html", answer=answer)
+    return render_template("conversation.html", answer=answer, conversations=conversations)
 
 @app.route("/pomodoro", methods=("GET", "POST"))
 def pomodoro():
