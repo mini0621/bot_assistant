@@ -9,7 +9,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 conversations = []
 prompt_conversation_num = 4
-bot_name = "Curie"
+bot_name = "June"
 conversation_name =  f"conversations_{dt.datetime.now().strftime('%Y%m%d%H%M%S')}"
 
 #commands list
@@ -17,9 +17,9 @@ log_activity_command = "/log"
 pomodoro_command = "/pomodoro"
 
 #pomodoro constants
-pomodoro_target = 1
-pomodoro_break = 1
-pomodoro_long_break = 1
+pomodoro_target = 25
+pomodoro_break = 5
+pomodoro_long_break = 15
 
 
 fp=open(f"conversation.html", "w")
