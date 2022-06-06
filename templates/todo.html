@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/todo.css') }}" />
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div>
+        <form action="/todo" method="post">
+            <input type="text" name="todo" placeholder="todo">  
+            <input type="submit" value="add" />
+        </form>
+    </div>
+    <div>
+        <table>
+            {% for todo in todos %}
+            <tr>
+                <td><a href="mark/{{todo.id}}">[]</a></td>
+                <td>{{ todo.content }}</td>
+                <td>
+                    <a href="todo/delete/{{todo.id}}">Delete</a>  <br>
+                    <a href="todo/update/{{todo.id}}">Update</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>

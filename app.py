@@ -3,6 +3,7 @@ import datetime as dt
 
 import openai
 from flask import Flask, redirect, render_template, request, url_for, send_file
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -21,9 +22,19 @@ pomodoro_target = 25
 pomodoro_break = 5
 pomodoro_long_break = 15
 
-
 fp=open(f"conversation.html", "w")
 fp.close()
+
+#db
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///store.db'
+db = SQLAlchemy(app)
+
+class Todo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300), nullable=False)
+
+def __rep__(self):
+    return '<Todo %r>' % self.id
 
 @app.route("/", methods=("GET", "POST"))
 def index():
@@ -115,3 +126,44 @@ def get_javascript_data(target):
 @app.route("/calendar", methods=("GET", "POST"))
 def calendar():
     return render_template("calendar.html")
+
+
+@app.route("/todo", methods=("GET", "POST"))
+def todo():
+    if request.method == "POST":
+        todo = request.form["todo"]
+        new_todo = Todo(content=todo)
+        try:
+            db.session.add(new_todo)
+            db.session.commit()
+            return redirect('/todo')
+        except:
+            return 'There was an error while adding the task'
+    todos = Todo.query.all()
+    return render_template("todo.html", todos=todos)
+
+@app.route('/todo/delete/<int:id>')
+def todo_delete(id):
+    task_to_delete = Todo.query.get_or_404(id)
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/todo')
+    except:
+        return 'There was an error while deleting that task'
+
+@app.route('/todo/update/<int:id>', methods=['GET','POST'])
+def todo_update(id):
+    todo = Todo.query.get_or_404(id)
+
+    if request.method == 'POST':
+        todo.content = request.form['todo']
+
+        try:
+            db.session.commit()
+            return redirect('/todo')
+        except:
+            return 'There was an issue while updating that task'
+
+    else:
+        return render_template('todo_update.html', todo=todo)
