@@ -45,8 +45,20 @@ body {
 .room {
   width: 100%;
 }
-.tool {
+.tools {
   width: 30%;
-  height: 800px;
+  height: 600px;
   background-color: gray;
+}
+
+.tool {
+  display:none;
+}
+
+.active-tool {
+  display:block;
+}
+
+.active-tool-nav {
+  background-color: aqua;
 }

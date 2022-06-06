@@ -17,9 +17,9 @@ log_activity_command = "/log"
 pomodoro_command = "/pomodoro"
 
 #pomodoro constants
-pomodoro_target = 25
-pomodoro_break = 5
-pomodoro_long_break = 15
+pomodoro_target = 1
+pomodoro_break = 1
+pomodoro_long_break = 1
 
 
 fp=open(f"conversation.html", "w")
@@ -27,16 +27,7 @@ fp.close()
 
 @app.route("/", methods=("GET", "POST"))
 def index():
-    if request.method == "POST":
-        user_name = request.form["user"]
-        new_prompt = request.form["prompt"]
-        if new_prompt.startswith(log_activity_command):
-            answer = log_activity(new_prompt)
-        else:
-            answer = chat(conversation_name, user_name, new_prompt)
-        return redirect(url_for("index", answer=answer))
-    answer = request.args.get("answer")
-    return render_template("index.html", answer=answer)
+    return render_template("index.html")
 
 def log_activity(new_prompt):
     activity_name = new_prompt.split(" ")[1]
@@ -73,7 +64,7 @@ def generate_prompt():
 
 def update_conversations(conversation_name, reply, user_name):
     with open(f"log/conversation_log/{conversation_name}.txt", "a") as fp:
-        fp.write(f"{user_name}:{reply}\n")
+        fp.write(f"{user_name}:{dt.datetime.now()}:{reply}\n")
         print("logging")
     with open(f"conversation.html", "a") as fp:
         fp.write(f"<p>{user_name}:{reply}\n</p>")
@@ -86,7 +77,6 @@ def show_conversations():
     return send_file('conversation.html')
 
 
-#test from here
 @app.route("/conversation", methods=("GET", "POST"))
 def conversation():
     if request.method == "POST":
@@ -115,3 +105,13 @@ def pomodoro():
         return render_template("pomodoro.html", target=target, target_break=break_target, long_break=long_break)    
     return render_template("pomodoro.html", target=pomodoro_target, target_break=pomodoro_break, long_break=pomodoro_long_break)
 
+@app.route('/pomodoro/getdata/<target>')
+def get_javascript_data(target):
+    current_datetime = dt.datetime.now()
+    with open(f"log/pomodoro_log/{current_datetime.strftime('%Y%m')}.txt", "a") as fp:
+        fp.write(f"{current_datetime}:{target}\n")
+        print("logging") 
+
+@app.route("/calendar", methods=("GET", "POST"))
+def calendar():
+    return render_template("calendar.html")

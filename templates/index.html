@@ -17,8 +17,14 @@
       </div>
       <img src="{{ url_for('static', filename='images/room.png') }}"/>
     </div>
-    <div class="tool">
-      <embed src="{{ url_for('pomodoro') }}" width="100%" height="800px"></embed>
+    <div class="tools">
+      <div class="toolnav">
+        <a id="pomodoro-nav" href="javascript:void(0)" onclick="change_tool('pomodoro')">Pomodoro</a>
+        <a id="calendar-nav" class="active-tool-nav" href="javascript:void(0)" onclick="change_tool('calendar')">Calendar</a>
+        <span id="test"></span>
+      </div>
+      <embed id="pomodoro-tool" class="tool" src="{{ url_for('pomodoro') }}" width="100%" height="800px"></embed>
+      <embed id="calendar-tool" class="tool active-tool" src="{{ url_for('calendar') }}" width="100%" height="800px"></embed>
     </div>
     <div class="conversation">
       <embed src="{{ url_for('conversation') }}" width="100%" height="800px"></embed>
@@ -28,6 +34,13 @@
     var dt = new Date();
     document.getElementById("current_date").innerHTML = dt.toLocaleDateString();
     document.getElementById("current_time").innerHTML = dt.toLocaleTimeString();
-    document.getElementById("timezone").innerHTML = dt.getTimezoneOffset() / 60
+    document.getElementById("timezone").innerHTML = dt.getTimezoneOffset() / 60;
+    
+    function change_tool(tool_name){
+      document.getElementsByClassName('active-tool-nav')[0].classList.remove('active-tool-nav');
+      document.getElementById(tool_name + "-nav").classList.add('active-tool-nav');  
+      document.getElementsByClassName('active-tool')[0].classList.remove('active-tool');
+      document.getElementById(tool_name + "-tool").classList.add('active-tool');
+    }
   </script>
 </body>

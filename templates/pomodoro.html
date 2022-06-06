@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pomodoro.css') }}" />
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
 </head>
 <body>
     <div>
         <div>
+            <p><span id="pomodoro-status"></span></p>
             <p>Pomodoro Count : <span id="pomodoro-count"></span></p>
             <div class="control-button">
                 <a id="pomodoro-reset-button" href="#" onclick="resetPomodoroCount()">
@@ -59,6 +62,7 @@
 
         document.getElementById("timer-minutes").innerHTML = time_left/60;
         document.getElementById("pomodoro-count").innerHTML = pomodoro_count;
+        document.getElementById("pomodoro-status").innerHTML = status;
          
         function changeStatus(status_to_be) {
             status = status_to_be;
@@ -71,6 +75,10 @@
             resetTimer();
         }
 
+        function log_pomodoro() {
+            $.get( "/pomodoro/getdata/" + String(target));
+        }
+
         function countDown() {
             interval = setInterval(function () {
                 updateTimer(time_left);
@@ -79,6 +87,7 @@
                     if (status == "pomodoro") {
                         pomodoro_count++;
                         status = "break";
+                        log_pomodoro();
                     }else{
                         status = "pomodoro";
                     }
@@ -98,6 +107,8 @@
             }else {
                 document.getElementById("timer-seconds").innerHTML = time_left%60;
             }
+            document.getElementById("pomodoro-count").innerHTML = pomodoro_count;
+            document.getElementById("pomodoro-status").innerHTML = status;
         }
         
         function startTimer() {
