@@ -16,9 +16,12 @@
         </div>
     </div>
     <div>
-        <form action="/pomodoro" method="post">
+        <form autocomplete="off" action="/pomodoro" method="post">
+            <p>pomodoro</p>
             <input type="text" name="target" placeholder="{{ target }}">  
+            <p>break</p>
             <input type="text" name="break_target" placeholder="{{ target_break }}">  
+            <p>long break</p>
             <input type="text" name="long_break" placeholder="{{ long_break }}">  
             <input type="submit" value="Change setting" />
         </form>
@@ -44,6 +47,17 @@
       <a id="pause-button" href="#" onclick="is_paused == true?resumeTimer(): pauseTimer();">
         Pause
       </a>
+    </div>
+    <div>
+        <ul id="session_log">
+        </ul>
+    </div>
+    <div class="log">
+        <ul>
+        {% for rec in log %}
+        <li>{{ rec }}</li> 
+        {% endfor %}
+      </ul>
     </div>
     <script>
         var target = "{{ target }}";
@@ -76,6 +90,12 @@
         }
 
         function log_pomodoro() {
+            var dt = new Date();
+            now = dt.toLocaleTimeString();
+            var ul = document.getElementById("session_log");
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(now));
+            ul.appendChild(li);
             $.get( "/pomodoro/getdata/" + String(target));
         }
 

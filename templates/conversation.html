@@ -2,7 +2,7 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/conversation.css') }}" />
 </head>
-<form action="/conversation" method="post">
+<form autocomplete="off" action="/conversation" method="post">
     <p>You are having a conversation as ... </p>
     <input type="text" name="user" placeholder="Misaki" value="Misaki" required /user_name>  
     <div class="old_conversation">

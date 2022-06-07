@@ -1,0 +1,4 @@
+Misaki:2022-06-06 21:53:02.321162:hello
+June:2022-06-06 21:53:03.950257: Hi there! How can I help you?
+Misaki:2022-06-06 21:53:16.806196:I need some info on cats
+June:2022-06-06 21:53:18.460904: Cats are a type of domesticated animal that is often kept as a pet. They are known for their independent nature, and many people enjoy their company.

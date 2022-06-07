@@ -12,10 +12,10 @@ conversations = []
 prompt_conversation_num = 4
 bot_name = "June"
 conversation_name =  f"conversations_{dt.datetime.now().strftime('%Y%m%d%H%M%S')}"
+date_id = dt.datetime.now().strftime('%Y%m%d')
 
 #commands list
 log_activity_command = "/log"
-pomodoro_command = "/pomodoro"
 
 #pomodoro constants
 pomodoro_target = 1
@@ -45,11 +45,24 @@ def log_activity(new_prompt):
         fp.write(f"{log_time}:{activity_name}\n")
     return f"I logged an activity.\n{log_time}:{activity_name}"
 
+def correct(prompt):
+    response = openai.Completion.create(
+         engine="text-davinci-002",
+         prompt=f"Correct this to standard English: {prompt}",
+         temperature=0,
+         max_tokens=60,
+         top_p=1,
+         frequency_penalty=0.0,
+         presence_penalty=0.0,
+    )
+    answer = response.choices[0].text 
+    return answer
+
 def chat(conversation_name, user_name, new_prompt):
     update_conversations(conversation_name, new_prompt, user_name)
     response = openai.Completion.create(
          engine="text-davinci-002",
-         prompt=generate_prompt(),
+         prompt=generate_prompt_for_chat(),
          temperature=0.8,
          max_tokens=150,
          top_p=1,
@@ -61,7 +74,7 @@ def chat(conversation_name, user_name, new_prompt):
     return answer       
     
 
-def generate_prompt():
+def generate_prompt_for_chat():
     print("generating prompt")
     setting = f"The following is a conversation with an AI assistant, {bot_name}. The assistant is intelligent, logical, and helpful.\n\n"
     prompt = setting + "\n".join(conversations[-4:]) + f"\n{bot_name}:" 
@@ -85,12 +98,18 @@ def conversation():
             answer = log_activity(new_prompt)
         else:
             answer = chat(conversation_name, user_name, new_prompt)
+            #correction = correct(new_prompt)
         return redirect(url_for("conversation", answer=answer, conversations=conversations))
     answer = request.args.get("answer")
     return render_template("conversation.html", answer=answer, conversations=conversations)
 
 @app.route("/pomodoro", methods=("GET", "POST"))
 def pomodoro():
+    try:
+        with open(f"log/pomodoro_log/{date_id}.txt", "r") as fp:
+            log = fp.readlines()
+    except:
+        log =[]
     if request.method == "POST":
         target = request.form["target"]
         break_target = request.form["break_target"]
@@ -101,14 +120,14 @@ def pomodoro():
             break_target = pomodoro_break
         if long_break == "":
             long_break = pomodoro_long_break
-        return render_template("pomodoro.html", target=target, target_break=break_target, long_break=long_break)    
-    return render_template("pomodoro.html", target=pomodoro_target, target_break=pomodoro_break, long_break=pomodoro_long_break)
+        return render_template("pomodoro.html", target=target, target_break=break_target, long_break=long_break, log=log)    
+    return render_template("pomodoro.html", target=pomodoro_target, target_break=pomodoro_break, long_break=pomodoro_long_break, log=log)
 
 @app.route('/pomodoro/getdata/<target>')
 def get_javascript_data(target):
     current_datetime = dt.datetime.now()
-    with open(f"log/pomodoro_log/{current_datetime.strftime('%Y%m')}.txt", "a") as fp:
-        fp.write(f"{current_datetime}:{target}\n")
+    with open(f"log/pomodoro_log/{date_id}.txt", "a") as fp:
+        fp.write(f"{current_datetime}:{target/60}\n")
         print("logging") 
 
 @app.route("/calendar", methods=("GET", "POST"))

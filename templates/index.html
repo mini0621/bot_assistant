@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Curie</title>
+  <title>June</title>
   <link
     rel="shortcut icon"
     href="{{ url_for('static', filename='images/room.png') }}"
@@ -19,14 +19,14 @@
     </div>
     <div class="tools">
       <div class="toolnav">
-        <a id="pomodoro-nav" href="javascript:void(0)" onclick="change_tool('pomodoro')">Pomodoro</a>
+        <a id="pomodoro-nav" class="active-tool-nav" href="javascript:void(0)" onclick="change_tool('pomodoro')">Pomodoro</a>
         <a id="calendar-nav" href="javascript:void(0)" onclick="change_tool('calendar')">Calendar</a>
-        <a id="todo-nav" class="active-tool-nav" href="javascript:void(0)" onclick="change_tool('todo')">Todo</a>
+        <a id="todo-nav" href="javascript:void(0)" onclick="change_tool('todo')">Todo</a>
         <span id="test"></span>
       </div>
-      <embed id="pomodoro-tool" class="tool" src="{{ url_for('pomodoro') }}" width="100%" height="800px"></embed>
+      <embed id="pomodoro-tool" class="tool active-tool" src="{{ url_for('pomodoro') }}" width="100%" height="800px"></embed>
       <embed id="calendar-tool" class="tool" src="{{ url_for('calendar') }}" width="100%" height="800px"></embed>
-      <embed id="todo-tool" class="tool active-tool" src="{{ url_for('todo') }}" width="100%" height="800px"></embed>
+      <embed id="todo-tool" class="tool" src="{{ url_for('todo') }}" width="100%" height="800px"></embed>
     </div>
     <div class="conversation">
       <embed src="{{ url_for('conversation') }}" width="100%" height="800px"></embed>
